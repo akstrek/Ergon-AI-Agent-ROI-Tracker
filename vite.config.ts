@@ -9,20 +9,11 @@ export default defineConfig(({mode}) => {
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
-      'global': 'globalThis',
     },
     resolve: {
-      alias: [
-        { find: /^node-fetch(\/.*)?$/, replacement: path.resolve(__dirname, 'empty-module.js') },
-        { find: /^formdata-polyfill(\/.*)?$/, replacement: path.resolve(__dirname, 'empty-module.js') },
-        { find: /^cross-fetch(\/.*)?$/, replacement: path.resolve(__dirname, 'empty-module.js') },
-        { find: /^whatwg-fetch(\/.*)?$/, replacement: path.resolve(__dirname, 'empty-module.js') },
-        { find: /^isomorphic-fetch(\/.*)?$/, replacement: path.resolve(__dirname, 'empty-module.js') },
-        { find: '@', replacement: path.resolve(__dirname, '.') },
-      ],
-    },
-    optimizeDeps: {
-      exclude: ['@google/genai', 'node-fetch', 'cross-fetch', 'isomorphic-fetch', 'formdata-polyfill'],
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

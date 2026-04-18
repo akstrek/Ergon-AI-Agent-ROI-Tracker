@@ -14,6 +14,8 @@
   
   --alpha-glass: 0.03;
   --alpha-glow: 0.15;
+  
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
 }
 
 :root {
