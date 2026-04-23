@@ -34,7 +34,7 @@ const VisionSvg = () => {
     >
       {/* Ambient Bleed inside the glass */}
       <motion.div 
-        className="absolute top-1/2 left-0 -translate-y-1/2 w-full h-[150px] bg-[#00E5FF]/20 rounded-full blur-[45px] pointer-events-none"
+        className="absolute top-1/2 left-0 -translate-y-1/2 w-full h-[150px] bg-[#FF3131]/20 rounded-full blur-[45px] pointer-events-none"
         variants={{
           initial: { opacity: 0.4 },
           hover: { opacity: 0.7, transition: { duration: 0.4 } }
@@ -43,11 +43,11 @@ const VisionSvg = () => {
       
       {tracks.map((track, i) => (
         <div key={i} className="relative h-[1px] w-full rounded-full">
-          {/* Base Teal Track */}
-          <div className="absolute inset-0 bg-[#00E5FF]" style={{ opacity: track.opacity }} />
+          {/* Base Technical Red Track */}
+          <div className="absolute inset-0 bg-[#FF3131]" style={{ opacity: track.opacity }} />
           {/* Firing Data Packet */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 h-[2px] w-[50px] bg-white rounded-full shadow-[0_0_12px_2px_#ffffff,0_0_20px_4px_#00E5FF]"
+            className="absolute top-1/2 -translate-y-1/2 h-[2px] w-[50px] bg-white rounded-full shadow-[0_0_12px_2px_#ffffff,0_0_20px_4px_#FF3131]"
             variants={{
               initial: { 
                 left: ['-20%', '120%'], 
@@ -131,7 +131,7 @@ const ToolTile = ({ tool, onClick }: { tool: any, onClick: () => void }) => {
            className="w-full h-full relative"
         >
             {/* 1px Linear Gradient Border Glow Wrapper */}
-            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[#00E5FF]/80 via-white/10 to-transparent p-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover:shadow-[0_20px_50px_rgba(0,229,255,0.15)]">
+            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[#FF3131]/80 via-white/10 to-transparent p-[1px] opacity-80 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover:shadow-[0_20px_50px_rgba(255,49,49,0.15)]">
                 
                 {/* Inner Tactile Glass Core */}
                 <div className="w-full h-full rounded-[calc(2rem-1px)] bg-[rgba(5,5,5,0.7)] backdrop-blur-3xl relative overflow-hidden flex flex-col p-8 z-10">
@@ -146,16 +146,16 @@ const ToolTile = ({ tool, onClick }: { tool: any, onClick: () => void }) => {
 
                     {/* Top-Right FUI Arrow Background */}
                     <div className="absolute top-6 right-6 w-8 h-8 rounded-full bg-[rgba(255,255,255,0.05)] flex items-center justify-center opacity-70 group-hover:opacity-100 transition-colors duration-300 z-20">
-                         <ArrowUpRight className="w-4 h-4 text-[#7f8c8d] group-hover:text-[#00E5FF] transition-colors" />
+                         <ArrowUpRight className="w-4 h-4 text-[#7f8c8d] group-hover:text-[#FF3131] transition-colors" />
                     </div>
 
                     {/* Micro-Typography & Header Layout */}
                     <div className="relative z-20 flex flex-col h-full w-full">
                         <div className="flex flex-col gap-1.5 items-start mt-2">
-                            <span className="font-mono text-[9px] font-bold text-[#00E5FF] uppercase tracking-[0.25em] animate-pulse">
+                            <span className="font-mono text-[9px] font-bold text-[#FF3131] uppercase tracking-[0.25em] animate-pulse">
                                 {tool.id === 'vision' ? '> SYS_STREAM_ACTIVE // 99.8%' : '> SYS_NODE_STANDBY // 0.0%'}
                             </span>
-                            <span className="font-brand font-bold text-white/90 uppercase tracking-[2px] text-[20px] shadow-black drop-shadow-md group-hover:text-[#00E5FF] group-hover:drop-shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all duration-300">
+                            <span className="font-brand font-bold text-white/90 uppercase tracking-[2px] text-[20px] shadow-black drop-shadow-md group-hover:text-[#FF3131] group-hover:drop-shadow-[0_0_15px_rgba(255,49,49,0.4)] transition-all duration-300">
                                 {tool.name}
                             </span>
                         </div>

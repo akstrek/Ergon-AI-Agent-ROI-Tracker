@@ -141,11 +141,11 @@ export const BackgroundE = ({ isSubpage }: { isSubpage: boolean }) => {
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none overflow-hidden flex items-center justify-center perspective-[2500px] transition-all duration-1500 ${isSubpage ? 'opacity-30 scale-125 blur-xl' : 'opacity-100 scale-100'}`}
+      className={`fixed inset-0 pointer-events-none overflow-hidden flex items-center justify-center perspective-[2500px] transition-all duration-1500 ${isSubpage ? 'opacity-30 scale-125 blur-xl' : 'opacity-100 scale-[0.85] md:scale-100'}`}
     >
       <motion.div
         style={{ rotateX, rotateY, x: shiftX, y: shiftY }}
-        className="relative w-[85vw] h-[85vw] max-w-[1400px] max-h-[1400px]"
+        className="relative w-[90vw] h-[90vw] md:w-[85vw] md:h-[85vw] max-w-[1400px] max-h-[1400px]"
       >
         {/* Neon Base Glow */}
         <motion.div 
@@ -498,18 +498,21 @@ const Header = ({ activeTool, activeModel, onNavigate }: { activeTool: string | 
                 <motion.button 
                   whileHover={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                    boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)'
+                    boxShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
                   }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => { setMenuOpen(false); navigate('/auth/login'); }}
-                  className="w-full h-14 border border-white/10 bg-white/5 text-white font-brand font-bold uppercase tracking-widest text-[10px] rounded-full backdrop-blur-md transition-all"
+                  className="w-full h-14 border border-white/10 bg-white/5 text-white font-brand font-bold uppercase tracking-widest text-[10px] rounded-full backdrop-blur-md transition-all active:bg-white active:text-black"
                 >
                   Log In
                 </motion.button>
                 <motion.button 
                   whileHover={{ 
-                    backgroundColor: '#e5e7eb',
-                    scale: 0.98
+                    backgroundColor: '#f8fafc',
+                    boxShadow: '0 0 30px rgba(255, 255, 255, 0.4)',
+                    scale: 1.02
                   }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => { setMenuOpen(false); navigate('/auth/signup'); }}
                   className="w-full h-14 bg-white text-black font-brand font-bold uppercase tracking-widest text-[10px] rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all"
                 >
@@ -542,7 +545,7 @@ const ToolDashboard = ({ activeTool, onBack }: { activeTool: string, onBack: () 
             <h2 className="text-white text-5xl font-brand font-bold mb-4 tracking-tighter uppercase">{activeTool}</h2>
             <p className="text-[#7f8c8d] font-sans tracking-widest text-xs uppercase opacity-60">System Core / Active Node Synthesis</p>
           </div>
-          <div className="flex gap-4">
+          <div className="hidden lg:flex gap-4">
             <motion.button 
               whileHover={{ 
                 backgroundColor: '#ffffff', 
@@ -556,6 +559,18 @@ const ToolDashboard = ({ activeTool, onBack }: { activeTool: string, onBack: () 
             </motion.button>
             <button className="p-3 bg-white text-black rounded-lg"><Activity className="w-5 h-5" /></button>
           </div>
+        </div>
+
+        {/* Mobile-only Export Data Button between Header and Component */}
+        <div className="lg:hidden -mb-4">
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full glass py-4 px-6 rounded-xl text-[10px] tracking-[0.2em] uppercase transition-all font-sans font-bold bg-white/5 border border-white/10 text-white flex items-center justify-center gap-2"
+          >
+            <ArrowUpRight className="w-4 h-4" />
+            Export Data
+          </motion.button>
         </div>
 
         {/* Dynamic Content Mapping */}
@@ -710,14 +725,14 @@ const RoiView = () => {
     <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[600px] relative overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(255,255,255,0.08)] transition-all duration-500">
       
       {/* Header & Controls */}
-      <div className="flex justify-between items-center z-20 mb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center z-20 mb-12 gap-6">
         <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] max-w-xs">Scorecard Metrics</h3>
-        <div className="flex bg-[#0a0a0a]/80 border border-[#7f8c8d]/30 rounded-lg p-1 backdrop-blur-md">
+        <div className="flex w-full md:w-auto bg-[#0a0a0a]/80 border border-[#7f8c8d]/30 rounded-lg p-1 backdrop-blur-md">
           {['Daily', 'Weekly', 'Monthly'].map(p => (
             <button 
               key={p} 
               onClick={() => setPeriod(p)}
-              className={`px-5 py-2.5 text-[9px] font-bold tracking-widest uppercase rounded transition-all ${p === period ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-[#7f8c8d] hover:text-white'}`}
+              className={`flex-1 md:flex-none px-4 md:px-5 py-2.5 text-[9px] font-bold tracking-widest uppercase rounded transition-all ${p === period ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-[#7f8c8d] hover:text-white'}`}
             >
               {p}
             </button>
@@ -758,30 +773,30 @@ const RoiView = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 flex-1">
         
         {/* Avg Time Saved */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#7f8c8d]">Avg Time Saved</p>
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
+          <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d]">Avg Time Saved</p>
           <motion.p 
             animate={{ opacity: [0.8, 1, 0.8] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="text-7xl text-white font-brand font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] tracking-tighter"
+            className="text-5xl md:text-7xl text-white font-brand font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] tracking-tighter"
           >
-            42<span className="text-3xl text-[#7f8c8d] ml-1">m</span>
+            42<span className="text-2xl md:text-3xl text-[#7f8c8d] ml-1">m</span>
           </motion.p>
         </div>
 
         {/* Completion Rate Delta */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between overflow-hidden relative">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#7f8c8d] relative z-10">Completion Rate Delta</p>
-          <div className="flex items-center gap-4 relative z-10 mt-6">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between overflow-hidden relative">
+          <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] relative z-10">Completion Rate Delta</p>
+          <div className="flex items-center gap-4 relative z-10 mt-6 md:mt-6">
              <motion.div 
                animate={{ y: [0, -8, 0] }}
                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
              >
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF3131" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_0_10px_rgba(255,49,49,1)]">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF3131" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_0_10px_rgba(255,49,49,1)]">
                    <path d="M12 19V5M5 12l7-7 7 7"/>
                 </svg>
              </motion.div>
-             <p className="text-6xl text-[#FF3131] font-brand font-bold drop-shadow-[0_0_15px_rgba(255,49,49,0.4)] tracking-tighter">+14.2%</p>
+             <p className="text-5xl md:text-6xl text-[#FF3131] font-brand font-bold drop-shadow-[0_0_15px_rgba(255,49,49,0.4)] tracking-tighter">+14.2%</p>
           </div>
           <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-y-1/4 translate-x-1/4">
              <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="#FF3131" strokeWidth="1">
@@ -791,9 +806,9 @@ const RoiView = () => {
         </div>
 
         {/* Weekly Trend */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#7f8c8d] mb-4">Trend (Trailing)</p>
-          <div className="w-full h-[120px] relative">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
+          <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] mb-4">Trend (Trailing)</p>
+          <div className="w-full h-[100px] md:h-[120px] relative">
              <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
                 <motion.path 
                   d="M 0 35 L 15 25 L 30 30 L 45 15 L 60 20 L 75 10 L 100 5" 
@@ -810,9 +825,9 @@ const RoiView = () => {
         </div>
 
         {/* Total Hours Saved */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between items-end text-right">
-           <p className="text-[10px] uppercase tracking-[0.2em] text-[#7f8c8d] w-full text-left">Total Hours Saved</p>
-           <p className="text-7xl text-white font-brand font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.9)] tracking-tighter mt-6">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between items-end text-right">
+           <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] w-full text-left">Total Hours Saved</p>
+           <p className="text-5xl md:text-7xl text-white font-brand font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.9)] tracking-tighter mt-4 md:mt-6">
              1,402
            </p>
         </div>
@@ -877,14 +892,16 @@ const ExperimentView = () => {
       </div>
 
       {/* Column 2: Results Data Grid */}
-      <div className="lg:col-span-2 bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[500px] relative overflow-hidden flex flex-col hover:shadow-[0_0_30px_rgba(255,49,49,0.05)] transition-all duration-500">
+      <div className="lg:col-span-2 bg-[#0a0a0a]/40 backdrop-blur-xl p-6 md:p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[500px] relative overflow-hidden flex flex-col hover:shadow-[0_0_30px_rgba(255,49,49,0.05)] transition-all duration-500">
         
-        <div className="flex justify-between items-start mb-12">
-           <div>
-             <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] mb-2">Live Experiment Results</h3>
-             <div className="flex items-center gap-3">
-               <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${status === 'Running' ? 'bg-[#FF3131] text-[#FF3131] animate-pulse' : status === 'Paused' ? 'bg-[#7f8c8d] text-[#7f8c8d]' : 'bg-white text-white'}`} />
-               <p className="text-[10px] text-[#7f8c8d] font-mono uppercase tracking-widest">Status: <span className="text-white">{status}</span></p>
+        <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
+           <div className="flex flex-col md:flex-row md:items-center gap-4">
+             <div className="w-full md:w-auto">
+                <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] mb-2">Live Experiment Results</h3>
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] ${status === 'Running' ? 'bg-[#FF3131] text-[#FF3131] animate-pulse' : status === 'Paused' ? 'bg-[#7f8c8d] text-[#7f8c8d]' : 'bg-white text-white'}`} />
+                  <p className="text-[10px] text-[#7f8c8d] font-mono uppercase tracking-widest">Status: <span className="text-white">{status}</span></p>
+                </div>
              </div>
            </div>
            
@@ -892,32 +909,36 @@ const ExperimentView = () => {
              onClick={() => setStatus(status === 'Running' ? 'Paused' : 'Running')}
              whileHover={{ scale: 1.05 }}
              whileTap={{ scale: 0.95 }}
-             className={`border px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase transition-all z-20 ${status === 'Running' ? 'border-[#FF3131] text-[#FF3131] shadow-[0_0_20px_rgba(255,49,49,0.2)] hover:bg-[#FF3131] hover:text-black' : 'border-white text-white hover:bg-white hover:text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'}`}
+             className={`w-full md:w-auto border px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase transition-all z-20 ${status === 'Running' ? 'border-[#FF3131] text-[#FF3131] shadow-[0_0_20px_rgba(255,49,49,0.2)] hover:bg-[#FF3131] hover:text-black' : 'border-white text-white hover:bg-white hover:text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'}`}
            >
              {status === 'Running' ? 'Halt Experiment' : 'Resume Protocol'}
            </motion.button>
         </div>
 
         {/* Illustrative Data Grid */}
-        <div className="flex-1 flex flex-col gap-6">
-           <div className="grid grid-cols-4 gap-4 px-6 border-b border-[#7f8c8d]/20 pb-4">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Condition</span>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Task Count</span>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Avg Time</span>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Completion Rate</span>
-           </div>
+        <div className="flex-1 flex flex-col gap-6 overflow-x-auto">
+           <div className="min-w-[450px]">
+              <div className="grid grid-cols-4 gap-4 px-6 border-b border-[#7f8c8d]/20 pb-4 mb-4">
+                 <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Condition</span>
+                 <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Task Count</span>
+                 <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Avg Time</span>
+                 <span className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d] text-right">Comp. Rate</span>
+              </div>
 
-           {conditions.map((cond, idx) => (
-             <div key={cond.id} className="grid grid-cols-4 gap-4 items-center bg-black/40 border border-[#7f8c8d]/10 p-6 rounded-2xl hover:border-white/50 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-1 h-8 rounded-full ${idx === 0 ? 'bg-white shadow-[0_0_10px_white]' : 'bg-[#FF3131] shadow-[0_0_10px_#FF3131]'}`} />
-                  <span className="font-mono text-sm text-white">{cond.name}</span>
-                </div>
-                <div className="text-right font-brand text-2xl text-white">{cond.count}</div>
-                <div className="text-right font-brand text-2xl text-white">{cond.time}</div>
-                <div className="text-right font-brand text-2xl text-[#FF3131] drop-shadow-[0_0_10px_rgba(255,49,49,0.5)]">{cond.rate}</div>
-             </div>
-           ))}
+              <div className="space-y-4">
+                {conditions.map((cond, idx) => (
+                  <div key={cond.id} className="grid grid-cols-4 gap-4 items-center bg-black/40 border border-[#7f8c8d]/10 p-5 md:p-6 rounded-2xl hover:border-white/50 transition-all group">
+                     <div className="flex items-center gap-3">
+                       <div className={`w-1 h-8 rounded-full shrink-0 ${idx === 0 ? 'bg-white shadow-[0_0_10px_white]' : 'bg-[#FF3131] shadow-[0_0_10px_#FF3131]'}`} />
+                       <span className="font-mono text-xs md:text-sm text-white truncate">{cond.name}</span>
+                     </div>
+                     <div className="text-right font-brand text-xl md:text-2xl text-white">{cond.count}</div>
+                     <div className="text-right font-brand text-xl md:text-2xl text-white">{cond.time}</div>
+                     <div className="text-right font-brand text-xl md:text-2xl text-[#FF3131] drop-shadow-[0_0_10px_rgba(255,49,49,0.5)]">{cond.rate}</div>
+                  </div>
+                ))}
+              </div>
+           </div>
 
            {/* Stylized visual backdrop for grid to break "table" look */}
            <div className="mt-auto px-6 pt-10">

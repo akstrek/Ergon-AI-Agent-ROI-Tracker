@@ -79,8 +79,8 @@ export default function ResetPassword() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6 text-center"
           >
-            <div className="mx-auto w-16 h-16 rounded-full bg-[#00E5FF]/10 flex items-center justify-center mb-6">
-              <Send className="text-[#00E5FF] w-8 h-8" />
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#FF3131]/10 flex items-center justify-center mb-6">
+              <Send className="text-[#FF3131] w-8 h-8" />
             </div>
             <h2 className="text-3xl font-brand font-bold text-white uppercase tracking-tight">Check your <br /> inbox</h2>
             <p className="text-[#8E9299]">We've sent a recovery link to <span className="text-white">{email}</span>. Please check your spam folder if you don't see it.</p>
@@ -110,7 +110,7 @@ export default function ResetPassword() {
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="w-full bg-[#00E5FF] text-black font-bold uppercase tracking-widest h-12 rounded-xl hover:bg-[#00D5EF] shadow-[0_0_20px_#00E5FF22]"
+                className="w-full bg-[#FF3131] text-black font-bold uppercase tracking-widest h-12 rounded-xl hover:bg-[#FF5C5C] shadow-[0_0_20px_rgba(255,49,49,0.22)]"
               >
                 {loading ? "Processing..." : "Send Reset Link"}
               </Button>

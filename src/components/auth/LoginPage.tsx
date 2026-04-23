@@ -23,15 +23,15 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full bg-[#0a0a0a] overflow-hidden">
       {/* Top Left Return Button */}
-      <div className="fixed top-8 left-8 z-[100] pointer-events-auto">
+      <div className="fixed top-6 left-6 md:top-8 md:left-8 z-[100] pointer-events-auto">
         <motion.button
           onClick={() => navigate('/')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="group flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 hover:bg-white hover:border-white"
+          className="group flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 hover:bg-white hover:border-white"
         >
-          <ArrowLeft className="w-4 h-4 text-white transition-colors duration-300 group-hover:text-black" />
-          <span className="font-brand font-bold text-[10px] tracking-[0.2em] uppercase text-white transition-colors duration-300 group-hover:text-black">
+          <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4 text-white transition-colors duration-300 group-hover:text-black" />
+          <span className="font-brand font-bold text-[9px] md:text-[10px] tracking-[0.2em] uppercase text-white transition-colors duration-300 group-hover:text-black">
             Return to Ergon
           </span>
         </motion.button>

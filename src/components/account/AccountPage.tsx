@@ -59,7 +59,7 @@ export default function AccountPage() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
-            className="min-h-screen w-full relative bg-black text-white selection:bg-[#00E5FF] selection:text-black"
+            className="min-h-screen w-full relative bg-black text-white selection:bg-[#FF3131] selection:text-black"
         >
             <AccountNavbar />
 
@@ -106,7 +106,7 @@ export default function AccountPage() {
                         className="bg-black/40 backdrop-blur-3xl border border-white/5 p-10 rounded-[2.5rem] space-y-10"
                     >
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#00E5FF]">
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#FF3131]">
                                 <Mail size={20} />
                             </div>
                             <h2 className="text-xl font-brand font-bold uppercase tracking-widest text-white/90">Registry Details</h2>
@@ -163,7 +163,7 @@ export default function AccountPage() {
                             </div>
 
                             <div className="pt-4 space-y-6">
-                                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[#00E5FF]">Password Rotation</h3>
+                                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[#FF3131]">Password Rotation</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input type="password" placeholder="Current Password" className="bg-black/50 border-white/10 h-12 rounded-xl" />
                                     <Input type="password" placeholder="New Password" className="bg-black/50 border-white/10 h-12 rounded-xl" />

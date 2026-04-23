@@ -76,12 +76,12 @@ export default function UpdatePassword() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-[420px] bg-[#0a0a0f]/40 backdrop-blur-2xl border border-white/5 p-10 rounded-[2.5rem] z-10 shadow-2xl relative"
       >
-        <div className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent" />
+        <div className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-[#FF3131] to-transparent" />
         
         <div className="space-y-8">
           <div className="space-y-3">
-            <div className="w-12 h-12 rounded-full bg-[#00E5FF]/10 flex items-center justify-center mb-6">
-              <ShieldCheck className="text-[#00E5FF] w-6 h-6" />
+            <div className="w-12 h-12 rounded-full bg-[#FF3131]/10 flex items-center justify-center mb-6">
+              <ShieldCheck className="text-[#FF3131] w-6 h-6" />
             </div>
             <h1 className="text-4xl font-brand font-bold text-white tracking-tight uppercase">New <br /> Credentials</h1>
             <p className="text-[#8E9299]">Secure your neural access node.</p>
@@ -96,7 +96,7 @@ export default function UpdatePassword() {
                   placeholder="••••••••" 
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="bg-black/50 border-white/10 h-14 pr-12 text-white rounded-xl focus:border-[#00E5FF]"
+                  className="bg-black/50 border-white/10 h-14 pr-12 text-white rounded-xl focus:border-[#FF3131]"
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-4 text-[#7f8c8d] hover:text-white transition-colors">
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -111,7 +111,7 @@ export default function UpdatePassword() {
                 placeholder="••••••••" 
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
-                className="bg-black/50 border-white/10 h-14 text-white rounded-xl focus:border-[#00E5FF]"
+                className="bg-black/50 border-white/10 h-14 text-white rounded-xl focus:border-[#FF3131]"
               />
             </div>
 
