@@ -1,8 +1,46 @@
-node_modules/
-build/
-dist/
-coverage/
+# ── OS ──────────────────────────────────────────────
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ── IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Environment & secrets ────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+secrets/
+
+# ── Logs ────────────────────────────────────────────
 *.log
-.env*
-!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Dependencies (root-level, if any) ───────────────
+node_modules/
+
+# ── Next.js build artifacts (frontend/) ─────────────
+# frontend/ has its own .gitignore for full Next.js coverage;
+# these entries protect against the root git index picking them up.
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+
+# ── Misc build / cache ───────────────────────────────
+dist/
+build/
+out/
+.cache/
+*.tsbuildinfo

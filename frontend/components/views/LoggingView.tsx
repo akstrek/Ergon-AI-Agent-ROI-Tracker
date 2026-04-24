@@ -1,0 +1,291 @@
+'use client'
+
+import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { logEvent } from '@/lib/analytics';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const UNDO_SECONDS = 10;
+
+export const LoggingView = () => {
+  const { user } = useAuth();
+  const [isAi, setIsAi] = useState(true);
+  const [complete, setComplete] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [lastTaskId, setLastTaskId] = useState<string | null>(null);
+  const [undoCountdown, setUndoCountdown] = useState(0);
+  const undoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [form, setForm] = useState({
+    task_descriptor: '',
+    node_assign: 'Ergon-Prime',
+    priority: 'CRITICAL',
+    time_mins: '',
+    experiment_link: 'None (Control)',
+  });
+
+  const clearUndo = () => {
+    setLastTaskId(null);
+    setUndoCountdown(0);
+    if (undoTimer.current) clearInterval(undoTimer.current);
+  };
+
+  useEffect(() => {
+    return () => { if (undoTimer.current) clearInterval(undoTimer.current); };
+  }, []);
+
+  const startUndoTimer = (id: string) => {
+    setLastTaskId(id);
+    setUndoCountdown(UNDO_SECONDS);
+    if (undoTimer.current) clearInterval(undoTimer.current);
+    undoTimer.current = setInterval(() => {
+      setUndoCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(undoTimer.current!);
+          setLastTaskId(null);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleUndo = async () => {
+    if (!lastTaskId || !user) return;
+    await supabase.from('tasks').delete().eq('id', lastTaskId);
+    await logEvent(user.id, 'task_undone', { task_id: lastTaskId });
+    clearUndo();
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setSubmitting(true);
+    setError(null);
+    clearUndo();
+
+    const { data: inserted, error: insertError } = await supabase
+      .from('tasks')
+      .insert({
+        user_id: user.id,
+        task_descriptor: form.task_descriptor,
+        node_assign: form.node_assign,
+        priority: form.priority,
+        mode: isAi ? 'AI-Assist' : 'Human',
+        time_mins: form.time_mins ? parseInt(form.time_mins, 10) : null,
+        experiment_link: form.experiment_link,
+        status: complete ? 'COMPLETED' : 'PENDING',
+      })
+      .select('id')
+      .single();
+
+    if (insertError) {
+      setError(insertError.message);
+      setSubmitting(false);
+      return;
+    }
+
+    await logEvent(user.id, 'task_logged', {
+      node: form.node_assign,
+      priority: form.priority,
+      mode: isAi ? 'AI-Assist' : 'Human',
+      status: complete ? 'COMPLETED' : 'PENDING',
+    });
+
+    setForm({ task_descriptor: '', node_assign: 'Ergon-Prime', priority: 'CRITICAL', time_mins: '', experiment_link: 'None (Control)' });
+    setComplete(false);
+    setIsAi(true);
+    setSubmitting(false);
+
+    if (inserted?.id) startUndoTimer(inserted.id);
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-1 bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-2xl border border-[#7f8c8d]/20 flex flex-col hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500">
+        <h3 className="text-white text-[11px] font-mono mb-8 uppercase tracking-[0.2em]">Command Terminal</h3>
+        <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
+          <div className="space-y-2">
+            <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Task Descriptor</label>
+            <input
+              type="text"
+              placeholder="CRITICAL OVERRIDE..."
+              value={form.task_descriptor}
+              onChange={e => handleChange('task_descriptor', e.target.value)}
+              className="w-full bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 p-4 rounded-lg text-white outline-none focus:border-white focus:shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all font-mono text-sm"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Node Assign</label>
+              <select
+                value={form.node_assign}
+                onChange={e => handleChange('node_assign', e.target.value)}
+                className="w-full bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 p-4 rounded-lg text-white outline-none focus:border-white transition-all font-mono text-sm appearance-none cursor-pointer"
+              >
+                <option>Ergon-Prime</option>
+                <option>Synth-01</option>
+                <option>Ghost-Node</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Priority</label>
+              <select
+                value={form.priority}
+                onChange={e => handleChange('priority', e.target.value)}
+                className="w-full bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 p-4 rounded-lg text-white outline-none focus:border-white transition-all font-mono text-sm appearance-none cursor-pointer"
+              >
+                <option>CRITICAL</option>
+                <option>HIGH</option>
+                <option>DEFAULT</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Mode</label>
+              <div className="flex bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 rounded-lg p-1 h-[54px]">
+                <button type="button" onClick={() => setIsAi(true)} className={`flex-1 text-[9px] font-bold tracking-[0.1em] uppercase rounded flex items-center justify-center transition-all ${isAi ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'text-[#7f8c8d] hover:text-white'}`}>AI-Assist</button>
+                <button type="button" onClick={() => setIsAi(false)} className={`flex-1 text-[9px] font-bold tracking-[0.1em] uppercase rounded flex items-center justify-center transition-all ${!isAi ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'text-[#7f8c8d] hover:text-white'}`}>Human</button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Time (Mins)</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={form.time_mins}
+                onChange={e => handleChange('time_mins', e.target.value)}
+                className="w-full bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 p-4 rounded-lg text-white outline-none focus:border-white focus:shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all font-mono text-sm h-[54px]"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Experiment Link</label>
+              <select
+                value={form.experiment_link}
+                onChange={e => handleChange('experiment_link', e.target.value)}
+                className="w-full bg-[#0a0a0a]/50 border border-[#7f8c8d]/30 p-4 rounded-lg text-white outline-none focus:border-white transition-all font-mono text-sm appearance-none cursor-pointer h-[54px]"
+              >
+                <option>None (Control)</option>
+                <option>Alpha - Flow A</option>
+                <option>Beta - Flow B</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.2em] text-[#7f8c8d]">Status</label>
+              <div
+                onClick={() => setComplete(!complete)}
+                className={`w-full border p-4 rounded-lg flex items-center justify-between cursor-pointer transition-all h-[54px] ${complete ? 'bg-[#FF3131]/20 border-[#FF3131] shadow-[0_0_15px_rgba(255,49,49,0.2)]' : 'bg-[#0a0a0a]/50 border-[#7f8c8d]/30 hover:border-white'}`}
+              >
+                <span className={`text-[10px] font-mono tracking-widest ${complete ? 'text-[#FF3131]' : 'text-[#7f8c8d]'}`}>{complete ? 'COMPLETED' : 'PENDING'}</span>
+                <div className={`w-3 h-3 rounded-full border border-current ${complete ? 'bg-[#FF3131]' : 'bg-transparent'}`} />
+              </div>
+            </div>
+          </div>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <AnimatePresence>
+            {lastTaskId && undoCountdown > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg px-4 py-3"
+              >
+                <span className="text-[10px] font-mono text-white/60 uppercase tracking-widest">Task logged</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[9px] font-mono text-[#7f8c8d]">{undoCountdown}s</span>
+                  <button
+                    type="button"
+                    onClick={handleUndo}
+                    className="text-[10px] font-bold font-mono uppercase tracking-widest text-[#FF3131] hover:text-white border border-[#FF3131]/40 hover:border-white px-3 py-1 rounded transition-all"
+                  >
+                    Undo
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <motion.button
+            type="submit"
+            disabled={submitting}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full mt-auto bg-gradient-to-b from-white to-[#a0a0a0] text-black py-4 rounded-lg font-bold tracking-[0.2em] uppercase text-[10px] shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] transition-all flex-shrink-0 disabled:opacity-50"
+          >
+            {submitting ? 'Executing...' : 'Execute Log'}
+          </motion.button>
+        </form>
+      </div>
+
+      <div className="lg:col-span-2 flex flex-col gap-8">
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div>
+            <h3 className="text-white text-[11px] font-mono mb-2 uppercase tracking-[0.2em]">Efficiency Yield</h3>
+            <p className="text-7xl text-white font-brand font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] tracking-tighter">94.2<span className="text-3xl text-[#7f8c8d]">%</span></p>
+          </div>
+          <div className="flex items-end gap-3 h-32 w-full md:w-auto flex-1 md:flex-none justify-end">
+            {[30, 45, 35, 60, 50, 95].map((val, i, arr) => (
+              <div key={i} className="relative w-8 h-full flex items-end">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${val}%` }}
+                  transition={{ duration: 1, delay: i * 0.1, ease: 'easeOut' }}
+                  className={`w-full rounded-t-sm ${i === arr.length - 1 ? 'bg-white shadow-[0_0_25px_rgba(255,255,255,0.9)]' : 'bg-white/10'}`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex-1 flex flex-col">
+          <h3 className="text-white text-[11px] font-mono mb-6 uppercase tracking-[0.2em]">Aggregated ROI Velocity</h3>
+          <div className="flex-1 relative w-full h-[180px]">
+            <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
+              <defs>
+                <linearGradient id="line-glow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FF3131" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#FF3131" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <motion.path
+                d="M 0 35 L 10 30 L 20 32 L 30 15 L 40 20 L 50 10 L 60 12 L 70 5 L 80 8 L 90 2 L 100 6"
+                fill="none"
+                stroke="#FF3131"
+                strokeWidth="1"
+                className="drop-shadow-[0_0_10px_rgba(255,49,49,1)]"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+              />
+              <motion.path
+                d="M 0 35 L 10 30 L 20 32 L 30 15 L 40 20 L 50 10 L 60 12 L 70 5 L 80 8 L 90 2 L 100 6 L 100 40 L 0 40 Z"
+                fill="url(#line-glow)"
+                opacity="0.5"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                transition={{ duration: 1, delay: 1 }}
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
