@@ -14,7 +14,6 @@
 
 ---
 
-<!-- Replace with actual hero screenshot -->
 ![Ergon Dashboard Hero](./docs/screenshots/dashboard.png)
 
 </div>
@@ -39,7 +38,6 @@ Ergon is a full-stack SaaS dashboard that tracks the ROI of AI agents and human 
 
 Four purpose-built tools, one command center.
 
-<!-- Replace with actual tool grid screenshot -->
 ![Tool Grid](./docs/screenshots/toolgrid.png)
 
 | Tool | Icon | Purpose |
@@ -53,7 +51,6 @@ Four purpose-built tools, one command center.
 
 ## 📊 The 4 ROI Metrics
 
-<!-- Replace with actual ROI view screenshot -->
 ![ROI Dashboard](./docs/screenshots/roi.png)
 
 | Metric | Formula | Why It Matters |
@@ -69,7 +66,6 @@ Period granularity: **Daily · Weekly · Monthly** — switchable in one click.
 
 ## 🧪 A/B Framework
 
-<!-- Replace with actual Experiment view screenshot -->
 ![Experiment Dashboard](./docs/screenshots/experiment.png)
 
 Deploy an experiment, assign tasks to conditions, and let the data decide.
@@ -88,7 +84,6 @@ The **Network Sync Rate** indicator shows the aggregate completion rate across a
 
 ## 👥 Team Dashboard
 
-<!-- Replace with actual Team view screenshot -->
 ![Team Dashboard](./docs/screenshots/team.png)
 
 Every agent node gets its own performance card.
@@ -105,7 +100,7 @@ Every agent node gets its own performance card.
 
 ## 👤 Account & Auth
 
-<!-- Replace with actual Account page screenshot -->
+
 ![Account Page](./docs/screenshots/user.png)
 
 | Feature | Detail |
