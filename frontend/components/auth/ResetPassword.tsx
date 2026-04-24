@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Send } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const StarfieldComponent = () => {
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -42,18 +44,29 @@ const StarfieldComponent = () => {
 };
 
 export default function ResetPassword() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log('Sending reset link to:', email);
-    setTimeout(() => {
-      setSubmitted(true);
+    setError(null);
+
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/update-password`,
+    });
+
+    if (resetError) {
+      setError(resetError.message);
       setLoading(false);
-    }, 1500);
+      return;
+    }
+
+    setSubmitted(true);
+    setLoading(false);
   };
 
   return (
@@ -85,9 +98,20 @@ export default function ResetPassword() {
             </div>
             <h2 className="text-3xl font-brand font-bold text-white uppercase tracking-tight">Check your <br /> inbox</h2>
             <p className="text-[#8E9299]">We've sent a recovery link to <span className="text-white">{email}</span>. Please check your spam folder if you don't see it.</p>
-            <Button onClick={() => setSubmitted(false)} variant="outline" className="border-white/10 text-white hover:bg-white/5 font-brand uppercase tracking-widest text-[10px] h-12 rounded-xl w-full">
-              Try another email
-            </Button>
+            <div className="flex flex-col gap-3 w-full">
+              <Button
+                onClick={() => { setSubmitted(false); setEmail(''); setError(null); }}
+                className="w-full h-12 bg-white/10 border border-white/20 text-white font-brand font-bold uppercase tracking-widest text-[10px] rounded-xl hover:bg-white/20 transition-all"
+              >
+                Try another email
+              </Button>
+              <button
+                onClick={() => router.push('/auth/login')}
+                className="text-[10px] font-mono uppercase tracking-widest text-[#7f8c8d] hover:text-white transition-colors"
+              >
+                ← Back to login
+              </button>
+            </div>
           </motion.div>
         ) : (
           <div className="space-y-8">
@@ -108,6 +132,11 @@ export default function ResetPassword() {
                   className="bg-black/50 border-white/10 h-12 text-white rounded-xl"
                 />
               </div>
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
               <Button
                 type="submit"
                 disabled={loading}

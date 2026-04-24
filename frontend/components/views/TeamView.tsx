@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -59,7 +59,7 @@ function computeDelta(tasks: Task[], node: string): string {
   return `${delta >= 0 ? '+' : ''}${delta.toFixed(1)}%`;
 }
 
-export const TeamView = () => {
+export const TeamView = memo(function TeamView() {
   const { user } = useAuth();
   const [members, setMembers] = useState<NodeMember[]>([]);
   const [totalHrs, setTotalHrs] = useState(0);
@@ -121,7 +121,7 @@ export const TeamView = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col md:flex-row justify-between items-center hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all gap-8">
+      <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col md:flex-row justify-between items-center hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all gap-8">
         <div>
           <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] mb-2">Cluster Status</h3>
           <p className="text-3xl text-white font-brand font-bold drop-shadow-[0_0_15px_white] tracking-tighter">
@@ -153,7 +153,7 @@ export const TeamView = () => {
       </div>
 
       {!dataLoading && members.length === 0 ? (
-        <div className="flex items-center justify-center h-48 bg-[#0a0a0a]/40 backdrop-blur-xl rounded-3xl border border-[#7f8c8d]/20">
+        <div className="flex items-center justify-center h-48 bg-[#0a0a0a]/40 backdrop-blur-md rounded-3xl border border-[#7f8c8d]/20">
           <p className="text-[#7f8c8d] font-mono text-[11px] uppercase tracking-[0.2em]">
             No tasks logged yet — nodes appear here after first log
           </p>
@@ -167,7 +167,7 @@ export const TeamView = () => {
               }))
             : members
           ).map((m, idx) => (
-            <div key={idx} className="bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col hover:border-white/50 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all group">
+            <div key={idx} className="bg-[#0a0a0a]/40 backdrop-blur-md p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col hover:border-white/50 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all group">
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <h4 className="text-2xl text-white font-bold font-brand mb-1 tracking-tighter">{m.name}</h4>
@@ -216,4 +216,4 @@ export const TeamView = () => {
       )}
     </div>
   );
-};
+});

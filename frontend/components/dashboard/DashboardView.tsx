@@ -2,14 +2,23 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Preloader } from '@/components/Preloader';
-import { BackgroundE } from '@/components/layout/BackgroundE';
-import { Starfield } from '@/components/canvas/Starfield';
 import { Header } from '@/components/layout/Header';
 import { ToolGrid } from '@/components/dashboard/ToolGrid';
 import { ToolDashboard } from '@/components/dashboard/ToolDashboard';
 import { HowToUse } from '@/components/dashboard/HowToUse';
 import { MobileScrollCTA } from '@/components/layout/MobileScrollCTA';
+
+// Lazy-load heavy canvas components — keeps them off the critical render path
+const BackgroundE = dynamic(
+  () => import('@/components/layout/BackgroundE').then(m => ({ default: m.BackgroundE })),
+  { ssr: false }
+);
+const Starfield = dynamic(
+  () => import('@/components/canvas/Starfield').then(m => ({ default: m.Starfield })),
+  { ssr: false }
+);
 
 export default function DashboardView({
   loading,
@@ -43,13 +52,10 @@ export default function DashboardView({
 
       {showBanner && (
         <div className="fixed top-[100px] md:top-[120px] left-0 w-full z-[9998] flex items-center justify-center px-4 py-3 bg-[#FF3131]/10 border-b border-[#FF3131]/40 backdrop-blur-md">
-          <motion.p
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="text-[#FF3131] font-mono font-bold text-[11px] uppercase tracking-[0.3em] drop-shadow-[0_0_8px_rgba(255,49,49,0.8)]"
-          >
+          {/* CSS animate-pulse replaces Framer infinite opacity loop — runs on compositor */}
+          <p className="animate-pulse text-[#FF3131] font-mono font-bold text-[11px] uppercase tracking-[0.3em] drop-shadow-[0_0_8px_rgba(255,49,49,0.8)]">
             ● Confirm Email and Login
-          </motion.p>
+          </p>
         </div>
       )}
 
@@ -85,13 +91,13 @@ export default function DashboardView({
                   <div className="hidden md:flex items-center gap-3 mt-6">
                     <button
                       onClick={() => window.scrollTo({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
-                      className="inline-flex px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl text-white font-mono text-[10px] tracking-[0.2em] uppercase hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-all duration-300"
+                      className="inline-flex px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white font-mono text-[10px] tracking-[0.2em] uppercase hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-all duration-300"
                     >
                       Explore Tools
                     </button>
                     <button
                       onClick={() => document.getElementById('how-to-use')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="inline-flex px-6 py-3 rounded-full border border-[#FF3131]/30 bg-[#FF3131]/5 backdrop-blur-xl text-[#FF3131] font-mono text-[10px] tracking-[0.2em] uppercase hover:bg-[#FF3131]/10 hover:border-[#FF3131]/60 hover:shadow-[0_0_20px_rgba(255,49,49,0.2)] transition-all duration-300"
+                      className="inline-flex px-6 py-3 rounded-full border border-[#FF3131]/30 bg-[#FF3131]/5 backdrop-blur-md text-[#FF3131] font-mono text-[10px] tracking-[0.2em] uppercase hover:bg-[#FF3131]/10 hover:border-[#FF3131]/60 hover:shadow-[0_0_20px_rgba(255,49,49,0.2)] transition-all duration-300"
                     >
                       How It Works
                     </button>

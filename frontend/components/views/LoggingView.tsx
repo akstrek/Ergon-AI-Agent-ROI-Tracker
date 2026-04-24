@@ -1,15 +1,15 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { logEvent } from '@/lib/analytics';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-const UNDO_SECONDS = 10;
+const UNDO_SECONDS = 20;
 
-export const LoggingView = () => {
+export const LoggingView = memo(function LoggingView() {
   const { user } = useAuth();
   const [isAi, setIsAi] = useState(true);
   const [complete, setComplete] = useState(false);
@@ -110,7 +110,7 @@ export const LoggingView = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-1 bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-2xl border border-[#7f8c8d]/20 flex flex-col hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500">
+      <div className="lg:col-span-1 bg-[#0a0a0a]/40 backdrop-blur-md p-8 rounded-2xl border border-[#7f8c8d]/20 flex flex-col hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500">
         <h3 className="text-white text-[11px] font-mono mb-8 uppercase tracking-[0.2em]">Command Terminal</h3>
         <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
           <div className="space-y-2">
@@ -235,7 +235,7 @@ export const LoggingView = () => {
       </div>
 
       <div className="lg:col-span-2 flex flex-col gap-8">
-        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex flex-col md:flex-row items-center justify-between gap-10">
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex flex-col md:flex-row items-center justify-between gap-10">
           <div>
             <h3 className="text-white text-[11px] font-mono mb-2 uppercase tracking-[0.2em]">Efficiency Yield</h3>
             <p className="text-7xl text-white font-brand font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] tracking-tighter">94.2<span className="text-3xl text-[#7f8c8d]">%</span></p>
@@ -254,7 +254,7 @@ export const LoggingView = () => {
           </div>
         </div>
 
-        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex-1 flex flex-col">
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-10 rounded-2xl border border-[#7f8c8d]/20 hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all duration-500 flex-1 flex flex-col">
           <h3 className="text-white text-[11px] font-mono mb-6 uppercase tracking-[0.2em]">Aggregated ROI Velocity</h3>
           <div className="flex-1 relative w-full h-[180px]">
             <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
@@ -288,4 +288,4 @@ export const LoggingView = () => {
       </div>
     </div>
   );
-};
+});

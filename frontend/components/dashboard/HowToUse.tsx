@@ -623,7 +623,7 @@ export const HowToUse = ({ onSelect }: { onSelect: (id: string) => void }) => {
                 </div>
 
                 {/* Card */}
-                <div className="flex-1 bg-[#0a0a0a]/40 backdrop-blur-xl border border-[#7f8c8d]/20 rounded-2xl p-5 flex flex-col gap-4 group-hover:border-white/30 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.06)] transition-all duration-500 relative overflow-hidden">
+                <div className="flex-1 bg-[#0a0a0a]/40 backdrop-blur-md border border-[#7f8c8d]/20 rounded-2xl p-5 flex flex-col gap-4 group-hover:border-white/30 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.06)] transition-all duration-500 relative overflow-hidden">
                   {/* Expand hint */}
                   <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-5 h-5 rounded-full border border-[#7f8c8d]/40 flex items-center justify-center">
@@ -670,7 +670,7 @@ export const HowToUse = ({ onSelect }: { onSelect: (id: string) => void }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-10 bg-[#0a0a0a]/40 backdrop-blur-xl border border-[#7f8c8d]/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-5 hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-500"
+          className="mt-10 bg-[#0a0a0a]/40 backdrop-blur-md border border-[#7f8c8d]/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-5 hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-500"
         >
           <div>
             <p className="text-white font-brand font-bold text-lg tracking-tight">Ready to track your first task?</p>

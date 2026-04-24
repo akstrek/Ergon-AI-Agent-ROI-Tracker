@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -10,27 +11,43 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera, Mail, Lock } from 'lucide-react';
+import { Camera, Mail, Lock, LogOut, Eye, EyeOff } from 'lucide-react';
 import { logEvent } from '@/lib/analytics';
 
 const MOUNTAIN_IMG = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2000";
 
 const AccountNavbar = () => {
     const E_PATH = "M 70 25 H 30 L 60 45 L 30 65 H 70";
+    const { signOut } = useAuth();
+    const [loggingOut, setLoggingOut] = React.useState(false);
+
+    const handleLogout = async () => {
+        setLoggingOut(true);
+        await signOut();
+        window.location.href = '/auth/login';
+    };
+
     return (
-        <header className="fixed top-0 left-0 w-full z-[100] px-12 h-24 flex items-center justify-between text-white border-b border-white/5 backdrop-blur-md bg-black/10">
-            <div className="flex-1 flex justify-end gap-12 mr-16">
-                <Link href="/dashboard" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all">Dashboard</Link>
-                <Link href="/experiments" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all">Experiments</Link>
+        <header className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 h-24 flex items-center justify-between text-white border-b border-white/5 backdrop-blur-md bg-black/10">
+            <div className="flex-1 flex justify-end gap-8 md:gap-12 mr-6 md:mr-16">
+                <Link href="/dashboard" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all hidden sm:block">Dashboard</Link>
+                <Link href="/dashboard" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all hidden sm:block">Experiments</Link>
             </div>
             <Link href="/" className="shrink-0 flex items-center justify-center p-3 rounded-2xl hover:bg-white/5 transition-colors group">
                 <svg viewBox="0 0 100 100" className="w-8 h-8 group-hover:drop-shadow-[0_0_10px_white] transition-all">
                     <path d={E_PATH} fill="none" stroke="white" strokeWidth="6" strokeLinecap="round" />
                 </svg>
             </Link>
-            <div className="flex-1 flex justify-start gap-12 ml-16">
-                <Link href="/team" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all">Team</Link>
-                <Link href="/settings" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all">Settings</Link>
+            <div className="flex-1 flex justify-start items-center gap-6 md:gap-10 ml-6 md:ml-16">
+                <Link href="/dashboard" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 hover:text-white transition-all hidden sm:block">Team</Link>
+                <button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#FF3131]/30 text-[#FF3131] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#FF3131]/10 hover:border-[#FF3131] transition-all duration-300 disabled:opacity-50"
+                >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">{loggingOut ? 'Logging out…' : 'Logout'}</span>
+                </button>
             </div>
         </header>
     );
@@ -73,6 +90,8 @@ export default function AccountPage() {
     const [pwdUpdate, setPwdUpdate] = useState({ new: '', confirm: '' });
     const [pwdMsg, setPwdMsg] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
     const [pwdLoading, setPwdLoading] = useState(false);
+    const [showPwdNew, setShowPwdNew] = useState(false);
+    const [showPwdConfirm, setShowPwdConfirm] = useState(false);
 
     const [stats, setStats] = useState<SessionStats>({ tasksLogged: 0, activeExperiments: 0, activeNodes: 0 });
 
@@ -152,6 +171,7 @@ export default function AccountPage() {
             setEmailMsg({ type: 'error', text: error.message });
         } else {
             setEmailMsg({ type: 'success', text: 'Confirmation sent to new address. Check your inbox.' });
+            await supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user!.id);
             await logEvent(user!.id, 'account_email_updated');
             setEmailUpdate(prev => ({ ...prev, new: '' }));
         }
@@ -197,7 +217,7 @@ export default function AccountPage() {
             <AccountNavbar />
 
             <div className="fixed inset-0 z-0">
-                <img src={MOUNTAIN_IMG} className="w-full h-full object-cover filter brightness-[0.4] grayscale-[0.2]" alt="Background" />
+                <Image src={MOUNTAIN_IMG} fill className="object-cover brightness-[0.4] grayscale-[0.2]" alt="Background" priority />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black select-none pointer-events-none" />
             </div>
 
@@ -244,7 +264,7 @@ export default function AccountPage() {
                     {/* Card 1: Account Details */}
                     <motion.div
                         whileHover={{ y: -5 }}
-                        className="bg-black/40 backdrop-blur-3xl border border-white/5 p-10 rounded-[2.5rem] space-y-10"
+                        className="bg-black/40 backdrop-blur-md border border-white/5 p-10 rounded-[2.5rem] space-y-10"
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#FF3131]">
@@ -273,7 +293,7 @@ export default function AccountPage() {
                     {/* Card 2: Update Credentials */}
                     <motion.div
                         whileHover={{ y: -5 }}
-                        className="bg-black/40 backdrop-blur-3xl border border-white/5 p-10 rounded-[2.5rem] space-y-12"
+                        className="bg-black/40 backdrop-blur-md border border-white/5 p-10 rounded-[2.5rem] space-y-12"
                     >
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
@@ -318,20 +338,38 @@ export default function AccountPage() {
                             <div className="pt-4 space-y-6">
                                 <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[#FF3131]">Password Rotation</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Input
-                                        type="password"
-                                        placeholder="New Password"
-                                        value={pwdUpdate.new}
-                                        onChange={e => setPwdUpdate(prev => ({ ...prev, new: e.target.value }))}
-                                        className="bg-black/50 border-white/10 text-white h-12 rounded-xl"
-                                    />
-                                    <Input
-                                        type="password"
-                                        placeholder="Confirm Password"
-                                        value={pwdUpdate.confirm}
-                                        onChange={e => setPwdUpdate(prev => ({ ...prev, confirm: e.target.value }))}
-                                        className="bg-black/50 border-white/10 text-white h-12 rounded-xl"
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            type={showPwdNew ? 'text' : 'password'}
+                                            placeholder="New Password"
+                                            value={pwdUpdate.new}
+                                            onChange={e => setPwdUpdate(prev => ({ ...prev, new: e.target.value }))}
+                                            className="bg-black/50 border-white/10 text-white h-12 rounded-xl pr-10"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPwdNew(v => !v)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7f8c8d] hover:text-white transition-colors"
+                                        >
+                                            {showPwdNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
+                                    <div className="relative">
+                                        <Input
+                                            type={showPwdConfirm ? 'text' : 'password'}
+                                            placeholder="Confirm Password"
+                                            value={pwdUpdate.confirm}
+                                            onChange={e => setPwdUpdate(prev => ({ ...prev, confirm: e.target.value }))}
+                                            className="bg-black/50 border-white/10 text-white h-12 rounded-xl pr-10"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPwdConfirm(v => !v)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7f8c8d] hover:text-white transition-colors"
+                                        >
+                                            {showPwdConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
                                 </div>
                                 {pwdMsg && (
                                     <Alert variant={pwdMsg.type === 'error' ? 'destructive' : 'default'}>

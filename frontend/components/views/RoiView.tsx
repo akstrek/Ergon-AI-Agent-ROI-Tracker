@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { logEvent } from '@/lib/analytics';
@@ -53,7 +53,7 @@ function buildTrendPath(tasks: Task[], days: number): string {
     .join(' ');
 }
 
-export const RoiView = () => {
+export const RoiView = memo(function RoiView() {
   const { user } = useAuth();
   const [period, setPeriod] = useState('Weekly');
   const [metrics, setMetrics] = useState<Metrics>({ avgTime: 0, totalHrs: 0, completionDelta: 0, trendPath: 'M 0 35 L 100 35' });
@@ -115,7 +115,7 @@ export const RoiView = () => {
   const deltaColor = metrics.completionDelta >= 0 ? 'text-[#FF3131]' : 'text-[#7f8c8d]';
 
   return (
-    <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[600px] relative overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(255,255,255,0.08)] transition-all duration-500">
+    <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[600px] relative overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(255,255,255,0.08)] transition-all duration-500">
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center z-20 mb-12 gap-6">
         <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] max-w-xs">Scorecard Metrics</h3>
@@ -162,7 +162,7 @@ export const RoiView = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 flex-1">
 
         {/* Avg Time Saved */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-md hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
           <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d]">Avg Time Saved</p>
           <motion.p
             key={metrics.avgTime}
@@ -175,7 +175,7 @@ export const RoiView = () => {
         </div>
 
         {/* Completion Rate Delta */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between overflow-hidden relative">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-md hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between overflow-hidden relative">
           <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] relative z-10">Completion Rate Delta</p>
           <div className="flex items-center gap-4 relative z-10 mt-6 md:mt-6">
             <motion.div
@@ -198,7 +198,7 @@ export const RoiView = () => {
         </div>
 
         {/* Trend */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-md hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between">
           <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] mb-4">Trend (Trailing)</p>
           <div className="w-full h-[100px] md:h-[120px] relative">
             <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
@@ -218,7 +218,7 @@ export const RoiView = () => {
         </div>
 
         {/* Total Hours Saved */}
-        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-xl hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between items-end text-right">
+        <div className="bg-[#0a0a0a]/70 border border-[#7f8c8d]/30 p-6 md:p-8 rounded-2xl backdrop-blur-md hover:border-white hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] transition-all flex flex-col justify-between items-end text-right">
           <p className="text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] text-[#7f8c8d] w-full text-left">Total Hours Saved</p>
           <p className="text-5xl md:text-7xl text-white font-brand font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.9)] tracking-tighter mt-4 md:mt-6">
             {dataLoading ? '—' : metrics.totalHrs.toLocaleString()}
@@ -228,4 +228,4 @@ export const RoiView = () => {
       </div>
     </div>
   );
-};
+});

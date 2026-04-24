@@ -14,7 +14,8 @@ export const Starfield = () => {
     let w = canvas.width = window.innerWidth;
     let h = canvas.height = window.innerHeight;
 
-    const stars = Array.from({ length: 250 }, () => ({
+    const starCount = window.innerWidth < 768 ? 120 : 250;
+    const stars = Array.from({ length: starCount }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
       r: Math.random() * 1.2 + 0.3,
@@ -28,8 +29,13 @@ export const Starfield = () => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
+    const handleTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t) { mouse.x = t.clientX; mouse.y = t.clientY; }
+    };
 
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('resize', () => {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
@@ -83,6 +89,7 @@ export const Starfield = () => {
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

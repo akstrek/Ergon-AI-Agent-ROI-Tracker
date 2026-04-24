@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { logEvent } from '@/lib/analytics';
@@ -21,7 +21,7 @@ interface ConditionResult {
   completionRate: number;
 }
 
-export const ExperimentView = () => {
+export const ExperimentView = memo(function ExperimentView() {
   const { user } = useAuth();
   const [activeExp, setActiveExp] = useState<Experiment | null>(null);
   const [conditions, setConditions] = useState<ConditionResult[]>([]);
@@ -134,7 +134,7 @@ export const ExperimentView = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-1 flex flex-col gap-8">
-        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all duration-500">
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all duration-500">
           <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] mb-6">Create Experiment</h3>
           <form onSubmit={handleDeploy} className="space-y-5">
             <div className="space-y-2">
@@ -180,7 +180,7 @@ export const ExperimentView = () => {
           </form>
         </div>
 
-        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col justify-center flex-1 hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] transition-all duration-500">
+        <div className="bg-[#0a0a0a]/40 backdrop-blur-md p-8 rounded-3xl border border-[#7f8c8d]/20 flex flex-col justify-center flex-1 hover:shadow-[0_0_30px_rgba(255,255,255,0.08)] transition-all duration-500">
           <h3 className="text-white text-[11px] font-mono uppercase tracking-[0.2em] mb-8">Network Sync Rate</h3>
           <p className="text-6xl text-white font-brand font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.7)] tracking-tighter mb-8">
             {dataLoading ? '—' : syncRate.toFixed(2)}<span className="text-2xl text-[#7f8c8d]">%</span>
@@ -196,7 +196,7 @@ export const ExperimentView = () => {
         </div>
       </div>
 
-      <div className="lg:col-span-2 bg-[#0a0a0a]/40 backdrop-blur-xl p-6 md:p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[500px] relative overflow-hidden flex flex-col hover:shadow-[0_0_30px_rgba(255,49,49,0.05)] transition-all duration-500">
+      <div className="lg:col-span-2 bg-[#0a0a0a]/40 backdrop-blur-md p-6 md:p-10 rounded-3xl border border-[#7f8c8d]/20 min-h-[500px] relative overflow-hidden flex flex-col hover:shadow-[0_0_30px_rgba(255,49,49,0.05)] transition-all duration-500">
 
         <div className="flex flex-col md:flex-row justify-between items-start mb-12 gap-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -283,4 +283,4 @@ export const ExperimentView = () => {
       </div>
     </div>
   );
-};
+});
