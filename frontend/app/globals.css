@@ -6,6 +6,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  color-scheme: dark;
+}
+
 @theme {
   --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-brand: "Space Grotesk", sans-serif;
